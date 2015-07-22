@@ -13,7 +13,14 @@ and limitations under the License
 */
 
 
-    var commandProxy = require('cordova/windows8/commandProxy');
+    // This try/catch is temporary to maintain backwards compatibility. Will be removed and changed to just 
+    // require('cordova/exec/proxy') at unknown date/time.
+    var commandProxy;
+    try {
+        commandProxy = require('cordova/windows8/commandProxy');
+    } catch (e) {
+        commandProxy = require('cordova/exec/proxy');
+    }
 
     module.exports = {
         cachedMediaDirectoryName: "_cachedMedia",

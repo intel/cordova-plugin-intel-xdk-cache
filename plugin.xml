@@ -42,6 +42,17 @@ and limitations under the License
        <source-file src="src/wp8/Cache.cs" /> 
    </platform>
 
+    <!-- windows -->
+    <platform name="windows">
+        <js-module src="www/cache.js" name="cache">
+            <clobbers target="intel.xdk.cache" />
+        </js-module>
+
+        <js-module src="src/windows8/cacheProxy.js" name="CacheProxy">
+            <merges target="" />
+        </js-module>
+   </platform>
+
     <!-- windows8 -->
     <platform name="windows8">
         <js-module src="www/cache.js" name="cache">

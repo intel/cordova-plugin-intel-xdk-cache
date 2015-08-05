@@ -85,6 +85,8 @@ and limitations under the License
                 var days = params[2];
 
                 var currTime = new Date();
+                var tempDate = new Date();
+
                 if (days == null)
                     days = "0";
                 if (days == "0")
@@ -93,8 +95,7 @@ and limitations under the License
                     days = me.DONOTEXPIRE;
                 else
                 {
-                    //currTime = currTime.AddDays(Double.Parse(days));
-                    myDate.setDate(myDate.getDate() + days)
+                    currTime = new Date(tempDate.setDate(tempDate.getDate() + days));
                 }
 
                 var tmp = new IntelCookie();
@@ -127,7 +128,8 @@ and limitations under the License
             }
             catch (ex)
             {
-                Logger.WriteLogMessageAsync("Error::SetCookie - " + ex.StackTrace);
+                if (Logger)
+                    Logger.WriteLogMessageAsync("Error::SetCookie - " + ex.StackTrace);
             }
         },
 

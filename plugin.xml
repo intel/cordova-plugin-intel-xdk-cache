@@ -44,6 +44,10 @@ and limitations under the License
 
     <!-- windows8 -->
     <platform name="windows8">
+        <js-module src="www/cache.js" name="cache">
+            <clobbers target="intel.xdk.cache" />
+        </js-module>
+
         <js-module src="src/windows8/cacheProxy.js" name="CacheProxy">
             <merges target="" />
         </js-module>

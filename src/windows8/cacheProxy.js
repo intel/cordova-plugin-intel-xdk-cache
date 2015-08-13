@@ -71,12 +71,18 @@ and limitations under the License
             {
                 if (typeof(params[0]) == "undefined" || typeof(params[1]) == "undefined" || typeof(params[2]) == "undefined")
                 {
-                    var ev = document.createEvent('Events');
+                    /*var ev = document.createEvent('Events');
                     ev.initEvent('intel.xdk.cache.media.add',true,true);
                     ev.success=false;
                     ev.filename='';
                     ev.message='Wrong number of parameters';
-                    document.dispatchEvent(ev);
+                    document.dispatchEvent(ev);*/
+                    me.createAndDispatchEvent("intel.xdk.cache.media.add",
+                        {
+                            success: false,
+                            filename: "",
+                            message: "Wrong number of parameters"
+                        });
                     return;
                 }
 
@@ -116,14 +122,6 @@ and limitations under the License
                 if (!found) {
                     me.intelCookies.push(tmp);
                 }
-                //var exists = this.intelCookies.Where(q => q.key == key).SingleOrDefault();
-                //if (exists != null)
-                //{
-                //    exists.value = value;
-                //    exists.expires = days;
-                //}
-                //else
-                //    this.intelCookies.Add(tmp);
                 me.WriteCookiesAsync();
             }
             catch (ex)
@@ -140,12 +138,18 @@ and limitations under the License
             {
                 if (typeof(params[0]) == "undefined")
                 {
-                    var ev = document.createEvent('Events');
+                    /*var ev = document.createEvent('Events');
                     ev.initEvent('intel.xdk.cache.media.add',true,true);
                     ev.success=false;
                     ev.filename='';
                     ev.message='Wrong number of parameters';
-                    document.dispatchEvent(ev);
+                    document.dispatchEvent(ev);*/
+                    me.createAndDispatchEvent("intel.xdk.cache.media.add",
+                        {
+                            success: false,
+                            filename: "",
+                            message: "Wrong number of parameters"
+                        });
                     return;
                 }
 
@@ -194,13 +198,15 @@ and limitations under the License
 
                             me.intelMediaCache = [];
 
-                            var e = document.createEvent('Events');
+                            /*var e = document.createEvent('Events');
                             e.initEvent('intel.xdk.cache.internal.media.clear',true,true);
-                            document.dispatchEvent(e);
+                            document.dispatchEvent(e);*/
+                            me.createAndDispatchEvent("intel.xdk.cache.internal.media.clear");
 
-                            e = document.createEvent('Events');
+                            /*e = document.createEvent('Events');
                             e.initEvent('intel.xdk.cache.media.clear',true,true);
-                            document.dispatchEvent(e);
+                            document.dispatchEvent(e);*/
+                            me.createAndDispatchEvent("intel.xdk.cache.media.clear");
                         }
                     );
                 }
@@ -237,45 +243,71 @@ and limitations under the License
                                         me.intelMediaCache.push([url, me.getLocalFilename(url)]);
 
                                         // don't fire this one if it isn't a new cache item
-                                        var e = document.createEvent('Events');
+                                        /*var e = document.createEvent('Events');
                                         e.initEvent('intel.xdk.cache.internal.media.add', true, true);
                                         e.success = true;
                                         e.url = url;
                                         e.filename = me.getLocalFilename(url);
                                         e.id = id;
-                                        document.dispatchEvent(e);
+                                        document.dispatchEvent(e);*/
+                                        me.createAndDispatchEvent("intel.xdk.cache.internal.media.add",
+                                            {
+                                                success: true,
+                                                url: url,
+                                                filename: me.getLocalFilename(url),
+                                                id: id
+                                            });
                                    }
 
                                     me.WriteMediaCacheAsync();
 
                                     if (typeof(id) != "undefined")
                                     {
-                                        e = document.createEvent('Events');
+                                        /*e = document.createEvent('Events');
                                         e.initEvent('intel.xdk.cache.media.add',true,true);
                                         e.success = true;
                                         e.url = url;
                                         e.id = id;
-                                        document.dispatchEvent(e);
+                                        document.dispatchEvent(e);*/
+                                        me.createAndDispatchEvent("intel.xdk.cache.media.add",
+                                            {
+                                                success: true,
+                                                url: url,
+                                                id: id
+                                            });
                                     }
                                     else
                                     {
                                         //intel.xdk.mediacache.push(url);
-                                        var e = document.createEvent('Events');
+                                        /*var e = document.createEvent('Events');
                                         e.initEvent('intel.xdk.cache.media.add', true, true);
                                         e.success = true; e.url = '" + url + "';
-                                        document.dispatchEvent(e);
+                                        document.dispatchEvent(e);*/
+                                        me.createAndDispatchEvent("intel.xdk.cache.media.add",
+                                            {
+                                                success: true,
+                                                url: url
+                                            });
                                     }
 
                                 },
                                 function (err) {
-                                    var e = document.createEvent('Events');
+                                    /*var e = document.createEvent('Events');
                                     e.initEvent('intel.xdk.cache.media.add',true,true);
                                     e.success = false;
                                     e.id = id;
                                     e.response='';
                                     e.extras = {};
                                     e.error = err;
-                                    document.dispatchEvent(e);
+                                    document.dispatchEvent(e);*/
+                                    me.createAndDispatchEvent("intel.xdk.cache.media.add",
+                                        {
+                                            success: false,
+                                            id: id,
+                                            response: "",
+                                            extras: {},
+                                            error: err
+                                        });
                                 }
                             );
                         }
@@ -313,19 +345,30 @@ and limitations under the License
                                 }
                             });
 
-                            var e = document.createEvent('Events');
-                            e.initEvent('iintel.xdk.cache.internal.media.remove', true, true);
+                            /*var e = document.createEvent('Events');
+                            e.initEvent('intel.xdk.cache.internal.media.remove', true, true);
                             e.success = true;
                             e.url = url;
                             e.filename = me.getLocalFilename(url);
-                            document.dispatchEvent(e);
+                            document.dispatchEvent(e);*/
+                            me.createAndDispatchEvent("intel.xdk.cache.internal.media.remove",
+                                {
+                                    success: true,
+                                    url: url,
+                                    filename: me.getLocalFilename(url)
+                                });
 
 
-                            e = document.createEvent('Events');
+                            /*e = document.createEvent('Events');
                             e.initEvent('intel.xdk.cache.media.remove',true,true);
                             e.success=true;
                             e.url=url;
-                            document.dispatchEvent(e);
+                            document.dispatchEvent(e);*/
+                            me.createAndDispatchEvent("intel.xdk.cache.media.remove",
+                                {
+                                    success: true,
+                                    url: url
+                                });
                         }
                     );
                 }
@@ -551,6 +594,17 @@ and limitations under the License
         getLocalFilename: function(url)
         {
             return url.substring(url.lastIndexOf('/') + 1);
+        },
+
+        createAndDispatchEvent: function (name, properties) {
+            var e = document.createEvent('Events');
+            e.initEvent(name, true, true);
+            if (typeof properties === 'object') {
+                for (key in properties) {
+                    e[key] = properties[key];
+                }
+            }
+            document.dispatchEvent(e);
         }
 
     };

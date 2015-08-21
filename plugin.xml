@@ -16,7 +16,7 @@ and limitations under the License
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="intel.xdk.cache"
-    version="1.2.1">
+    version="1.2.2">
     <name>Intel XDK Cache</name>
     <description>Intel XDK Cache Plugin</description>
     <license>Apache 2.0</license>

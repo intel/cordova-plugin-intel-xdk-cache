@@ -264,7 +264,7 @@ public class Cache extends CordovaPlugin {
         File newFile;
         do {
             newFileName = (cachedMediaCounter++) + extension;
-            newFile = new File(newFileName);
+            newFile = new File(cachedMediaDirectory, newFileName);
         } while(newFile.exists());
         
         //return filename with same extension as url

@@ -1,3 +1,4 @@
+cordova.define("intel.xdk.cache.tests.tests", function(require, exports, module) {
 /*
 Copyright 2015 Intel Corporation
 
@@ -452,6 +453,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
             '<div id="buttonAddToMediaCacheExt"></div>' +
             'Expected result: should add selected media to media cache ext' +
 
+            '<h3>Add to Media Cache Ext with Basic Auth</h3>' +
+            '<div id="buttonAddToMediaCacheExtBasicAuth"></div>' +
+            'Expected result: should add password protected media to media cache ext' +
+
             '<h3>Remove From Media Cache</h3>' +
             '<div id="buttonRemoveFromMediaCache"></div>' +
             'Expected result: should remove selected media from media cache' +
@@ -513,6 +518,12 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         intel.xdk.cache.addToMediaCacheExt(image, 1);
     }, 'buttonAddToMediaCacheExt');
     
+    createActionButton('addToMediaCacheExtBasicAuth()', function() {
+        console.log('executing', 'intel.xdk.cache.addToMediaCacheExt with basic auth');
+        var json = 'http://user1:passwd1@httpbin.org/basic-auth/user1/passwd1';
+        intel.xdk.cache.addToMediaCacheExt(json, 2);
+    }, 'buttonAddToMediaCacheExtBasicAuth');
+
     createActionButton('getMediaCacheLocalURL()', function() {
         console.log('executing', 'intel.xdk.cache.getMediaCacheLocalURL');
         var image = document.getElementById('mediaSelect').value;
@@ -537,3 +548,4 @@ exports.defineManualTests = function (contentEl, createActionButton) {
   
     document.addEventListener('deviceready', init, false);
 };
+});

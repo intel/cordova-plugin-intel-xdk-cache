@@ -15,5 +15,21 @@
 # -->
 # Release Notes
 
+### 1.2.4 (March 10, 2016)
+* Removed dependency on Apache HTTP client for [compatibility with Android 6.0](http://developer.android.com/about/versions/marshmallow/android-6.0-changes.html#behavior-apache-http-client "Android 6.0 Release Notes")
+
+### 1.2.3 (Nov 23, 2015)
+* Corrects pulling the cache file from the wrong location because of missing directory path in File constructor.
+
+### 1.2.2 (Aug 21, 2015)
+* Added single method to dispatch event
+
+### 1.2.1 (August 5, 2015)
+* Added windows platform
+* Bug fix for windows platform for setting the expiration date of a setting a cookie
+
+### 1.2.0 (July 22, 2015)
+* Added Windows 5.0 Compatibility
+
 ### 1.1.0 (May 15, 2015)
 * Initial public release

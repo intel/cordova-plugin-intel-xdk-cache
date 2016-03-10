@@ -14,10 +14,26 @@ and limitations under the License
 
 package com.intel.xdk.cache;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Debug;
+import android.util.Base64;
+import android.util.Log;
+
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -26,27 +42,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.os.Debug;
-import android.util.Base64;
-import android.util.Log;
-import android.webkit.WebView;
 
 public class Cache extends CordovaPlugin {
     private static final SimpleDateFormat sdf;
@@ -463,63 +458,64 @@ public class Cache extends CordovaPlugin {
         {
             return get(url, context, file, dir, null);
         }
-        
+
         public static Boolean get(String url, Context context, String file, File dir, DownloadProgressEmitter emitter)
         {
             Boolean success = true;
-            HttpEntity entity = CacheHandler.getHttpEntity(url);
-            try {           
-                CacheHandler.writeToDisk(entity, context, file, dir, url, emitter);
-            } catch (Exception e) { 
-                if(Debug.isDebuggerConnected()) {
-                    Log.d(tag, e.getMessage(), e);
-                }
-                success = false; 
-            }
+            HttpURLConnection connection = null;
             try {
-                entity.consumeContent();
+                connection = getConnection(url);
+                CacheHandler.writeToDisk(connection, context, file, dir, url, emitter);
             } catch (Exception e) {
                 if(Debug.isDebuggerConnected()) {
                     Log.d(tag, e.getMessage(), e);
                 }
-                success = false;
+                success = false; 
+            } finally {
+                if(connection != null) {
+                    connection.disconnect();
+                }
             }
             return success;
         }
 
-        public static HttpEntity getHttpEntity(String url)
+        public static HttpURLConnection getConnection(String urlString)
         /**
          * get the http entity at a given url
          */
         {
-            HttpEntity entity=null;
+            HttpURLConnection connection=null;
             try {
-                DefaultHttpClient httpclient = new DefaultHttpClient();
-                HttpGet httpget = new HttpGet(url);
+                URL url = new URL(urlString);
+                connection = (HttpURLConnection) url.openConnection();
+
                 //check for user info in url, do pre-emptive authentication if present
-                if(httpget.getURI().getUserInfo()!=null) {
-                    String[] creds = httpget.getURI().getUserInfo().split(":");
-                    if(creds.length==2) httpget.setHeader("Authorization", "Basic " + Base64.encodeToString((creds[0]+":"+creds[1]).getBytes(), Base64.NO_WRAP));
+                if(url.getUserInfo()!=null) {
+                    String[] creds = url.getUserInfo().split(":");
+                    if(creds.length==2) {
+                        connection.setRequestProperty("Authorization", "Basic " + Base64.encodeToString((creds[0]+":"+creds[1]).getBytes(), Base64.NO_WRAP));
+                    }
                 }
-                HttpResponse response = httpclient.execute(httpget);
-                int code = response.getStatusLine().getStatusCode() / 100;
-                if( code == 2 ) entity = response.getEntity(); // only get the entity for 200 level codes
+
+                int code = connection.getResponseCode() / 100;
+                if( code != 2 ) connection = null; // only return the connection for 200 level codes
             } catch (Exception e) { 
                 if(Debug.isDebuggerConnected()) {
                     Log.d(tag, e.getMessage(), e);
                 }
-                return null; }
-            return entity;
+                return null;
+            }
+            return connection;
         }
 
-        public static void writeToDisk(HttpEntity entity, Context context, String file, File dir, String url, DownloadProgressEmitter emitter) throws Exception
+        public static void writeToDisk(HttpURLConnection connection, Context context, String file, File dir, String url, DownloadProgressEmitter emitter) throws Exception
         /**
          * writes a HTTP entity to the specified filename and location on disk
          */
         {
             long lastEmission = System.currentTimeMillis();
             long current = 0;
-            InputStream in = entity.getContent();
+            InputStream in = connection.getInputStream();
             byte buff[] = new byte[1024*64];
             FileOutputStream out = null;
             if(dir==null){
@@ -545,7 +541,7 @@ public class Cache extends CordovaPlugin {
                         //limit emissions to 1/sec
                         long now = System.currentTimeMillis();
                         if((now-lastEmission)>999) {
-                            emitter.emit(current, entity.getContentLength());
+                            emitter.emit(current, connection.getContentLength());
                             lastEmission = now;
                         }
                     }

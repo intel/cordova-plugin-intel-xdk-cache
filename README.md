@@ -1,3 +1,12 @@
+DISCONTINUATION OF PROJECT.
+
+This project will no longer be maintained by Intel.
+
+Intel has ceased development and contributions including, but not limited to, maintenance, bug fixes, new releases, or updates, to this project. 
+
+Intel no longer accepts patches to this project.
+
+If you have an ongoing need to use this project, are interested in independently developing it, or would like to maintain patches for the open source software community, please create your own fork of this project. 
 DISCONTINUATION OF PROJECT.  This project will no longer be maintained by Intel.  Intel will not provide or guarantee development of or support for this project, including but not limited to, maintenance, bug fixes, new releases or updates.  Patches to this project are no longer accepted by Intel.  In an effort to support the developer community, Intel has made this project available under the terms of the Apache License, Version 2. If you have an ongoing need to use this project, are interested in independently developing it, or would like to maintain patches for the community, please create your own fork of the project.
 
 intel.xdk.cache
